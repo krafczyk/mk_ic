@@ -72,8 +72,9 @@ def constructArgumentOutput(self, prefix, context, pairs):
                 value = pairs[0][1]
                 lines += [(len(prefix) * ' ') + value]
             else:
+                fix_empty_strings = lambda s: " " if len(s) == 0 else s
                 lines = [prefix + context] + [
-                    icecream.format_pair(len(prefix) * ' ', arg, value)
+                    icecream.format_pair(len(prefix) * ' ', arg, fix_empty_strings(value))
                     for arg, value in pairs
                 ]
         # ic| multilineStr: 'line1
