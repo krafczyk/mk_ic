@@ -59,37 +59,35 @@ def constructArgumentOutput(self, prefix, context, pairs):
         # ic| foo.py:11 in foo()
         #     a: 11111111111111111111
         #     b: 22222222222222222222
-        is_single_string = False
-        if len(pairs) == 1:
-            f, l = pairs[0][0][0], pairs[0][0][-1]
+        fix_empty_strings = lambda s: " " if len(s) == 0 else s
+        def is_single_string(s):
+            result = False
+            f, l = s[0], s[-1]
             if f == '"' and l == '"':
-                is_single_string = True
+                result = True
             elif f == "'" and l == "'":
-                is_single_string = True
+                result = True
+            return result
         if context:
             lines = [prefix + context]
-            if is_single_string:
-                value = pairs[0][1]
-                lines += [(len(prefix) * ' ') + value]
-            else:
-                fix_empty_strings = lambda s: " " if len(s) == 0 else s
-                lines = [prefix + context] + [
-                    icecream.format_pair(len(prefix) * ' ', arg, fix_empty_strings(value))
-                    for arg, value in pairs
-                ]
+            for arg, value in pairs:
+                if is_single_string(arg):
+                    lines += [(len(prefix) * ' ') + fix_empty_strings(value)]
+                else:
+                    lines += [ icecream.format_pair(len(prefix) * ' ', arg, fix_empty_strings(value))]
         # ic| multilineStr: 'line1
         #                    line2'
         #
         # ic| a: 11111111111111111111
         #     b: 22222222222222222222
         else:
-            if is_single_string:
-                arg_lines = [pairs[0][1]]
-            else:
-                arg_lines = [
-                    icecream.format_pair('', arg, value)
-                    for arg, value in pairs
-                ]
+            arg_lines = []
+            for arg, value in pairs:
+                if is_single_string(arg):
+                    arg_lines += [fix_empty_strings(value)]
+                else:
+                    arg_lines += [icecream.format_pair('', arg, fix_empty_strings(value))]
+
             lines = icecream.indented_lines(prefix, '\n'.join(arg_lines))
     # ic| foo.py:11 in foo()- a: 1, b: 2
     # ic| a: 1, b: 2, c: 3
