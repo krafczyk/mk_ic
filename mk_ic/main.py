@@ -1,4 +1,4 @@
-from mk_ic.mkdebugger import mkic
+from mk_ic.mkdebugger import mkic, mkics
 from mk_ic.utils import argumentToString
 import icecream
 
@@ -6,9 +6,15 @@ import icecream
 def setup():
     mkic.configureOutput(
         includeContext=True,
-        outputFunction=lambda s: print(s),
+        outputFunction=print,
         argToStringFunction=argumentToString,
-        prefix="Debug | ")
+        prefix="MKIC | ")
+
+    mkics.configureOutput(
+        includeContext=True,
+        outputFunction=print,
+        argToStringFunction=argumentToString,
+        prefix="MKICS | ")
 
 
 try:
@@ -17,10 +23,12 @@ except ImportError:
     builtins = __import__('builtins')
 
 
-def install(ic='ic'):
+def install(ic='ic', ics='ics'):
     setup()
     setattr(builtins, ic, mkic)
+    setattr(builtins, ics, mkics)
 
 
-def uninstall(ic='ic'):
+def uninstall(ic='ic', ics='ics'):
     delattr(builtins, ic)
+    delattr(builtins, ics)
