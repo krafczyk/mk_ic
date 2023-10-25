@@ -22,8 +22,6 @@ class MKIceCreamDebugger(icecream.IceCreamDebugger):
                 return s
 
         func_ctx = list(map(add_parens, func_ctx))
-        # Bottom of the list is the most recent function
-        func_ctx = list(reversed(func_ctx))
 
         context_prefix = f'{filename}:{lineNumber} in '
         context = [ f"{context_prefix}{func_ctx[0]}"]
@@ -117,6 +115,7 @@ class MKIceCreamDebugger(icecream.IceCreamDebugger):
         #     a: 11111111111111111111
         #     b: 22222222222222222222
         if context:
+            context = list(reversed(context))
             lines = [prefix + context[0]]
             for line in context[1:]:
                 lines += [len(prefix) * ' ' + line]
