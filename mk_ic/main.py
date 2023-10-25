@@ -1,19 +1,26 @@
-from mk_ic.utils import new_get_context, argumentToString, constructArgumentOutput
-from icecream import ic, IceCreamDebugger
+from mk_ic.mkdebugger import mkic
+from mk_ic.utils import argumentToString
+import icecream
 
 
 def setup():
-    IceCreamDebugger._getContext = new_get_context
-    IceCreamDebugger._constructArgumentOutput = constructArgumentOutput
-
-    ic.configureOutput(
+    mkic.configureOutput(
         includeContext=True,
         outputFunction=lambda s: print(s),
         argToStringFunction=argumentToString,
         prefix="Debug | ")
 
 
-def install():
-    from icecream import install
+try:
+    builtins = __import__('__builtin__')
+except ImportError:
+    builtins = __import__('builtins')
+
+
+def install(ic='ic'):
     setup()
-    install()
+    setattr(builtins, ic, mkic)
+
+
+def uninstall(ic='ic'):
+    delattr(builtins, ic)
