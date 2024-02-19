@@ -32,3 +32,13 @@ def install(ic='ic', ics='ics'):
 def uninstall(ic='ic', ics='ics'):
     delattr(builtins, ic)
     delattr(builtins, ics)
+
+
+def install_function(f, name=None):
+    if name is None:
+        name = f.__name__
+    setattr(builtins, name, f)
+
+
+def remove_function(name):
+    delattr(builtins, name)
