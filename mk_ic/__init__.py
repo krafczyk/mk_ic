@@ -1,11 +1,11 @@
-from mk_ic.main import install, setup, install_func, remove_func
+from mk_ic.main import install, setup, install_function, remove_function
 from mk_ic.utils import pytest_wrapper_elimination
 
 
 __all__ = [
     install,
-    install_func,
-    remove_func,
+    install_function,
+    remove_function,
     setup,
     pytest_wrapper_elimination
 ]
